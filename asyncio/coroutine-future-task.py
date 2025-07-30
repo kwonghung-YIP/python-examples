@@ -22,22 +22,30 @@ async def coroutine_with_await(caller,delay):
     await asyncio.sleep(delay)
     print("there!")
 
-async def long_running_func():
+async def long_running_func(limit = 20):
     task = asyncio.current_task()
     tname = task.get_name()
 
+    s = time.perf_counter()
     log.info("long_running_func[%s]: started...",tname)
     
     try:
-        while True:
+        count:int = 1
+        sleep_ttl:float = 0
+        while count < limit:
             sleep:float = random.randint(1,10)
-            log.info("long_running_func[%s]: sleep for %d second...", tname, sleep)
+            sleep_ttl = sleep_ttl + sleep
+            log.info("long_running_func[%s]: count %d, sleep for %d second...", tname, count, sleep)
             await asyncio.sleep(sleep)
-            log.info("long_running_func[%s]: wake up after %d second", tname, sleep)
+            log.info("long_running_func[%s]: count %d, wake up after %d second", tname, count, sleep)
+            count = count + 1
+        log.info("long_running_func[%s]: exit after count %d", tname, count)
     except asyncio.CancelledError:
         log.info("long_running_func[%s]: cancelled",tname)
     finally:
-        log.info("long_running_func[%s]: completed",tname)
+        elapsed = time.perf_counter() - s
+        log.info("long_running_func[%s]: completed, elapse: %d total sleep: %d",tname,elapsed,sleep_ttl)
+        return count
 
 async def cancel_tasks(*tasks:asyncio.Task):
     try:
@@ -49,6 +57,10 @@ async def cancel_tasks(*tasks:asyncio.Task):
             t.cancel()
     except asyncio.CancelledError:
         log.info("cancel cancel")
+
+async def raise_exception_after(sleep:int):
+    await asyncio.sleep(sleep)
+    raise Exception("raise exception after %d seconds",sleep)
 
 async def run_tasks():
     task = asyncio.create_task(coroutine_with_await("task",3))
@@ -90,12 +102,25 @@ async def main2():
 
     await asyncio.gather(task1,task2,task3,cancelTask)
 
+async def main3():
+    try:
+        async with asyncio.TaskGroup() as taskgrp:
+            t1 = taskgrp.create_task(long_running_func(),name="GrpTask1")
+            t2 = taskgrp.create_task(long_running_func(),name="GrpTask2")
+            t3 = taskgrp.create_task(long_running_func(),name="GrpTask3")
+            cancelTask = taskgrp.create_task(raise_exception_after(30),name="cancelTask")
+    except Exception as e:
+        log.info(f"Exception from task: {e}")
+    finally:
+        log.info("Counts t1:%s, t2:%s, t3:%s",t1.result(),t2.result(),t3.result())
+        log.info("TaskGroup completed.")
+
 if __name__ == "__main__":
     log.info(f"start {__name__} ...")
     s = time.perf_counter()
 
     #main1()
-    asyncio.run(main2())
+    asyncio.run(main3())
 
     elapsed = time.perf_counter() - s
     log.info(f"{__file__} executed in {elapsed} seconds.")

@@ -40,6 +40,9 @@ sudo usermod -aG docker $USER
 sudo apt-get update
 sudo apt-get install python3 python3-dev python3-pip python3-venv
 
+# install venv module
+python3 -m venv .venv
+
 # update global git config
 git config --global --add "user.name" "Hung Yip"
 git config --global --add "user.email" "kwonghung.yip@gmail.com"
