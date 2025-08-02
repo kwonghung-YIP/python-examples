@@ -45,10 +45,9 @@ async def report_status(target:asyncio.Task):
 
 async def cancel_task(target:asyncio.Task):
     log.info("start cancel task...")
-    while not target.done():
-        await asyncio.sleep(10)
-        successCancel = target.cancel("cancel() request from canel_task")
-        log.info("cancel task[%s] success? %s, cancelled? %s cancelling? %d", target.get_name(), successCancel, target.cancelled(), target.cancelling())
+    await asyncio.sleep(10)
+    successCancel = target.cancel("cancel() request from canel_task")
+    log.info("cancel task[%s] success? %s, cancelled? %s cancelling? %d", target.get_name(), successCancel, target.cancelled(), target.cancelling())
     
 async def main():
     t1 = asyncio.create_task(long_running(),name="t1")
