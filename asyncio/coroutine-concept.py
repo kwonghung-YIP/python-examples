@@ -26,15 +26,25 @@ async def coroutine_without_await():
     await asyncio.sleep(9999)
 
 async def coroutine_for_create_task():
-    print("This part is executed while calling asyncio.create_task...")
+    print("asyncio.create_task schedule to run the coroutine into the event_loop immediately after created the task.")
     await asyncio.sleep(1)
-    print("This part is executed after putting the task with await statement...")
+    print("but this part never be executed if you don't \'await\' the task, and you won't found the RuntimeWarning as well")
+    await asyncio.sleep(1)
+    print("completed!")
 
 async def async_main():
     # calling the async function return a coroutine object,
     # a coroutine object is ready for executed by the event-loop,
     # and by putting it with the await statement, it is wrapped by
     # a task and scheduled to be executed by the event-loop
+
+    coroutine5 = coroutine_for_create_task()
+    print("create task...")
+    task = asyncio.create_task(coroutine5)
+    #print("put task into await statment...")
+    #await task
+    print(f"task done? {task.done()}")
+
 
     coroutine1 = coroutine_without_return()
     print(f"type of coroutine_without_return: {type(coroutine1)}")
@@ -55,13 +65,9 @@ async def async_main():
         print(err)
 
     # raise the RuntimeWarning after exit the program if a coroutine never been "await"
-    #coroutine4 = coroutine_without_await()
-    #print("await coroutine_without_await...")
+    coroutine4 = coroutine_without_await()
+    print("await coroutine_without_await...")
 
-    coroutine5 = coroutine_for_create_task()
-    task = asyncio.create_task(coroutine5)
-    print("put task into await statment...")
-    await task
 
 if __name__ == "__main__":
     asyncio.run(async_main())
