@@ -36,9 +36,10 @@ async def wakeup_after(sleep:float):
 async def main():
     try:
         timeout = 10
-        task = asyncio.create_task(wakeup_after(60),name="task1")
+        log.info("Create the 'wakeup_after' coroutine.")
+        coroutine = wakeup_after(60)
         async with asyncio.timeout(timeout) as contextManager:
-            log.info("current deadline is %d seconds...", contextManager.when())
+            log.info("contextManager created with original deadline %d seconds...", contextManager.when())
             log.info("sleep for %d seconds",3)
             await asyncio.sleep(3)
             event_loop_time = asyncio.get_running_loop().time()
@@ -47,12 +48,11 @@ async def main():
             log.info("reschdule timeout to %d seconds(+15)",new_deadline)
             log.info("suppose 'wakeup_after' wake up at %d", 15 + 3)
             contextManager.reschedule(new_deadline)
-            await task
+            await coroutine
+            log.info("here")
 
     except asyncio.TimeoutError as err:
         log.info("catch TimeoutError %s",err)
-
-    log.info("task done? %s", task.done())
 
 
 if __name__ == "__main__":
