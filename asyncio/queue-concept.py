@@ -5,6 +5,7 @@ import random
 import logging
 
 queueStatus = contextvars.ContextVar('queueStatus',default="active")
+msgCounter = contextvars.ContextVar('msgCounter',default=1)
 sharedContext = contextvars.copy_context()
 
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +20,9 @@ async def consumer(queue:asyncio.Queue):
         try:
             log.info("waiting for new message from the queue...")
             msg = await queue.get()
+            interval = random.randint(1,10)
+            log.info(f"sleep for {interval} sec...")
+            await asyncio.sleep(interval)
             log.info(f"message received [{msg}]")
             queue.task_done()
         except asyncio.CancelledError as err:
@@ -29,7 +33,9 @@ async def producer(queue:asyncio.Queue,noOfMsg:int):
     i:int = 0
     while i <= noOfMsg:
         try:
-            msg = f"msg-{i}"
+            msgCnt = msgCounter.get()
+            msgCounter.set(msgCnt + 1)
+            msg = f"msg-{msgCnt}"
             log.info(f"sending msg {msg} to queue...")
             await queue.put(msg)
             interval = random.randint(1,10)
@@ -44,8 +50,8 @@ async def producerGroup(queue:asyncio.Queue):
     try:
         log.info("start producer thread group...")
         async with asyncio.TaskGroup() as tg:
-            producers = [tg.create_task(producer(queue,10), \
-                   name=f"producer-{x}") for x in range(5)]
+            producers = [tg.create_task(producer(queue,100), \
+                   name=f"producer-{x}", context=sharedContext) for x in range(10)]
             tg.create_task(stopThreadGroup(),context=sharedContext)
     except* StopThreadGroupException:
         log.info("producer thread group completed.")
@@ -57,7 +63,7 @@ async def consumerGroup(queue:asyncio.Queue):
         log.info("start consumer thread group...")
         async with asyncio.TaskGroup() as tg:
             consumers = [tg.create_task(consumer(queue), \
-                   name=f"producer-{x}") for x in range(5)]
+                   name=f"producer-{x}") for x in range(3)]
             tg.create_task(stopThreadGroup(),context=sharedContext)
     except* StopThreadGroupException:
         log.info("consumer thread group completed.")
@@ -83,7 +89,7 @@ async def monitor(queue:asyncio.Queue):
 async def stopThreadGroup():
     while True:
         status = queueStatus.get()
-        log.info(f"queue status:{status}")
+        log.debug(f"queue status:{status}")
         if status == "active":
             await asyncio.sleep(1)
         else:
