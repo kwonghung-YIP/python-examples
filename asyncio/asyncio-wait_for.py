@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -9,8 +10,10 @@ async def running_for(seconds:float):
     try:
         log.info("start running_for")
         await asyncio.sleep(seconds)
+        #time.sleep(seconds)
         log.info("complete running_for")
     except asyncio.CancelledError as err:
+        # catch CancelledError if timeout before wakeup from sleep
         log.info("received CancelledError")
         # populate the CancelledError in order to raise 
         # the TimeoutError for asyncio.wait_for
