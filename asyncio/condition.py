@@ -26,41 +26,37 @@ log.addHandler(handler)
 counter = contextvars.ContextVar("counter",default=0)
 context = contextvars.copy_context()
 
-async def counting(event:asyncio.Event,lock:asyncio.Lock):
+async def counting(condition:asyncio.Condition) -> None:
     try:
-        log.info("waiting for the event being set...")
-        await event.wait()
-        log.info("waiting for acquiring the lock...")
-        async with lock:
+        log.info("waiting for acquiring the condition's lock...")
+        async with condition:
+            log.info("waiting for notification...")
+            await condition.wait()
             i = 1
             while i <= 5:
                 await asyncio.sleep(1)
                 cnt = counter.get()
                 cnt += 1
-                log.info(f"increasing counter by 1:{cnt}")
+                log.info("increasing counter by 1: {cnt}")
                 counter.set(cnt)
                 i += 1
-            log.info("finish and release lock.")
+            log.info("complete and release condition's lock")
     except asyncio.CancelledError as err:
-        log.info("catch CancelledError")
+        log.info("catch asyncio.CancellerError")
         raise err
 
-async def toggleEvent(event:asyncio.Event,sleep):
+async def firstNotify(condition:asyncio.Condition, sleep) -> None:
     await asyncio.sleep(sleep)
-    log.info(f"set event after {sleep} sec")
-    event.set()
+    async with condition:
+        log.info("notify another task...")
+        condition.notify();    
 
-async def main():
-    event = asyncio.Event()
-    lock = asyncio.Lock()
-
-    awaitables = [ asyncio.create_task(counting(event,lock),context=context)
-        for _ in range(1,11) ]
-    awaitables.append(toggleEvent(event,5))
-
-    await asyncio.gather(*awaitables)
+async def main() -> None:
+    condition = asyncio.Condition()
+    awaitables = []# asyncio.create_task(counting(condition),name=f"task-{i}",context=context) for i in range(1,11)]
+    awaitables.append(firstNotify(condition,5))
+    asyncio.gather(*awaitables)
     log.info(f"main() completed")
-
 
 if __name__ == "__main__":
     start_timestamp = time.perf_counter()
