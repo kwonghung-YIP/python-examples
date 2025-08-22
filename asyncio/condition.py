@@ -31,15 +31,19 @@ async def counting(condition:asyncio.Condition) -> None:
         log.info("waiting for acquiring the condition's lock...")
         async with condition:
             log.info("waiting for notification...")
+            # release the lock and wait for notify() or notify_all()
             await condition.wait()
+            # received notify() and acquire the lock again
             i = 1
             while i <= 5:
                 await asyncio.sleep(1)
                 cnt = counter.get()
                 cnt += 1
-                log.info("increasing counter by 1: {cnt}")
+                log.info(f"increasing counter by 1: {cnt}")
                 counter.set(cnt)
                 i += 1
+            log.info("notify another task")
+            condition.notify()
             log.info("complete and release condition's lock")
     except asyncio.CancelledError as err:
         log.info("catch asyncio.CancellerError")
@@ -53,9 +57,13 @@ async def firstNotify(condition:asyncio.Condition, sleep) -> None:
 
 async def main() -> None:
     condition = asyncio.Condition()
-    awaitables = []# asyncio.create_task(counting(condition),name=f"task-{i}",context=context) for i in range(1,11)]
+    awaitables = [asyncio.create_task(counting(condition),name=f"task-{i}",context=context) for i in range(1,11)]
     awaitables.append(firstNotify(condition,5))
-    asyncio.gather(*awaitables)
+    try:
+        async with asyncio.timeout(30) as cm:
+            await asyncio.gather(*awaitables)
+    except TimeoutError:
+        log.info("catch TimeoutError")
     log.info(f"main() completed")
 
 if __name__ == "__main__":
