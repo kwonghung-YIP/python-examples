@@ -1,3 +1,7 @@
 ### References
 - [Real Python - Async IO in Python: A Complete Walkthrough](https://realpython.com/async-io-python/)
 - [Real Python - ExceptionGroup and except*](https://realpython.com/python311-exception-groups/)
+- [Real Python - Asynchronous Iterators and Iterable in Python](https://realpython.com/python-async-iterators)
+
+()
+

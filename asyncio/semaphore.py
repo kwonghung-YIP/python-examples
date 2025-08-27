@@ -53,5 +53,5 @@ async def main() -> None:
 
 if __name__ == "__main__":
     start_timestamp = time.perf_counter()
-    asyncio.run(main())
+    asyncio.run(main(),debug=True)
     log.info("__main__ completed.")
