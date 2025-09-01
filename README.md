@@ -3,7 +3,7 @@
 docker run -d --name ollama --restart always \
     -v $HOME/.ollama:/root/.ollama \
     -p 11434:11434 \
-    ollama/ollama:0.9.5
+    ollama/ollama:0.11.8
 
 docker exec -it ollama ollama --help
 docker exec -it ollama ollama pull gemma3
@@ -11,6 +11,7 @@ docker exec -it ollama ollama pull gemma3:27b
 docker exec -it ollama ollama pull llama3.2
 docker exec -it ollama ollama pull llama3.3
 docker exec -it ollama ollama pull mistral
+docker exec -it ollama ollama pull gpt-oss:20b
 ```
 
 ### VM setup steps
