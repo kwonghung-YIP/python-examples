@@ -9,13 +9,13 @@ class Person:
     
     def __init__(self, firstName, lastName):
         self.title:Title = None
-        self.firstName:str = firstName
-        self.lastName:str = lastName
+        self._firstName:str = firstName
+        self._lastName:str = lastName
 
     def setTitle(self,title:Title):
         self.title = title
 
     def __str__(self) -> str:
-        return f"name: {self.title.value} {self.firstName} {self.lastName} \
+        return f"name: {self.title.value} {self._firstName} {self._lastName} \
             email: {Person.email}"
     
