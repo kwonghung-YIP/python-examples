@@ -56,3 +56,5 @@ obj = C()
 # expected C5
 obj.f1()
 
+print(isinstance(obj,C5))
+print(issubclass(C,C8))
