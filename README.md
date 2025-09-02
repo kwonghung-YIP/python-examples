@@ -12,6 +12,7 @@ docker exec -it ollama ollama pull llama3.2
 docker exec -it ollama ollama pull llama3.3
 docker exec -it ollama ollama pull mistral
 docker exec -it ollama ollama pull gpt-oss:20b
+docker exec -it ollama ollama pull dolphin-mixtral:8x7b
 ```
 
 ### VM setup steps
