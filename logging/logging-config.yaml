@@ -1,1 +1,21 @@
 version: 1
+formatters:
+  asyncio_task:
+    format: "%(asctime)s [%(levelname)s]|%(threadName)s|%(taskName)s|%(elapse)6.3f|%(funcName)s : %(message)s"
+filters:
+  myFilter:
+    "()": packageA.module1.MyFilter.factory
+handlers:
+  asyncio_console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: asyncio_task
+    filters:
+      - myFilter
+loggers:
+  asyncio_log:
+    level: INFO
+    propagate: false
+    handlers:
+      - asyncio_console
+
