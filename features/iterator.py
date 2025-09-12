@@ -41,3 +41,7 @@ if __name__ == "__main__":
 
     print([ x**2 for x in Iteratable(1,5) ])
     print(sum(Iteratable(1,5)))
+    print(max(Iteratable(1,5)))
+    print(min(Iteratable(1,5)))
+    
+    print([*map(lambda n:n+1,Iteratable(1,5))])
