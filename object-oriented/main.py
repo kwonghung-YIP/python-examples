@@ -9,7 +9,11 @@ if __name__ == "__main__":
     john = Person("John","Doe")
     john.title = Title.MR
     john.email = "abc@yahoo.com"
+    log.info(john)
     log.info(type(john))
+
+    del john.title
+    john.title = Title.MR
 
     peter = Person("Peter","Pan")
     peter.title = Title.MR
