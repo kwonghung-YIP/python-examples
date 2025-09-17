@@ -14,8 +14,8 @@ class Person:
     def __init__(self, firstName, lastName):
         print("Person __init__")
         self.title:Title = None
-        self._firstName:str = firstName
-        self._lastName:str = lastName
+        self.__firstName:str = firstName
+        self.__lastName:str = lastName
 
     #def __getattribute__(self, name):
     #    pass
@@ -29,10 +29,15 @@ class Person:
     def __del__(self):
         print("Person __del__")
 
+    #def __str__(self) -> str: # informal
+    #    print("Person __str__")
+    #    return f"name: {self.title.value} {self.__firstName} {self.__lastName} \
+    #        email: {Person.email}"
+
+    def __repr__(self) -> str: # formal
+        print("Person __repr__")
+        return f"{self.__firstName} {self.__lastName}"
+
     def setTitle(self,title:Title):
         self.title = title
 
-    def __str__(self) -> str:
-        return f"name: {self.title.value} {self._firstName} {self._lastName} \
-            email: {Person.email}"
-    

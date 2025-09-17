@@ -11,6 +11,7 @@ if __name__ == "__main__":
     john.email = "abc@yahoo.com"
     log.info(john)
     log.info(type(john))
+    log.info(f"str:{str(john)},repr:{repr(john)}")
 
     del john.title
     john.title = Title.MR
