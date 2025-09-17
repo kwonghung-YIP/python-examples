@@ -29,10 +29,10 @@ class Person:
     def __del__(self):
         print("Person __del__")
 
-    #def __str__(self) -> str: # informal
-    #    print("Person __str__")
-    #    return f"name: {self.title.value} {self.__firstName} {self.__lastName} \
-    #        email: {Person.email}"
+    def __str__(self) -> str: # informal
+        print("Person __str__")
+        return f"name: {self.title.value} {self.__firstName} {self.__lastName} \
+            email: {Person.email}"
 
     def __repr__(self) -> str: # formal
         print("Person __repr__")
