@@ -2,6 +2,9 @@ from contextlib import contextmanager
 import time
 import random
 
+#
+# Reference => https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
+#
 @contextmanager
 def timer():
     print("start timer()...")

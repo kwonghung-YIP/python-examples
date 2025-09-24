@@ -4,3 +4,4 @@
 - [Python doc - contextlib — Utilities for with-statement contexts](https://docs.python.org/3/library/contextlib.html)
 - [Python doc - object.__enter__ function](https://docs.python.org/3/reference/datamodel.html#object.__enter__)
 - [Python doc - object.__exit__ function](https://docs.python.org/3/reference/datamodel.html#object.__exit__)
+- [Python doc - Asynchronous Context Managers](https://docs.python.org/3/reference/datamodel.html#async-context-managers)
