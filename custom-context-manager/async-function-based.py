@@ -20,7 +20,16 @@ async def asyncTimer():
         resource['elapse'] = resource['endTime'] - resource['startTime']
         print(f"Elapse time:{resource['elapse']}")
 
-async def main():
+@asyncTimer()
+async def main_decorator():
+    #print(f"main() startTime:{t['startTime']}")
+    print("sleep for 2 seconds in main...")
+    await asyncio.sleep(2)
+    x = sorted([random.randint(1,10000) for x in range(100000)])
+    print(f"first(x):{x[0]}")
+    print(f"last(x):{x[len(x)-1]}")
+
+async def main_async_with():
     async with asyncTimer() as t:
         print(f"main() startTime:{t['startTime']}")
         print("sleep for 2 seconds in main...")
@@ -32,16 +41,7 @@ async def main():
     
     print("After with statement")
 
-@asyncTimer()
-async def main2():
-    #print(f"main() startTime:{t['startTime']}")
-    print("sleep for 2 seconds in main...")
-    await asyncio.sleep(2)
-    x = sorted([random.randint(1,10000) for x in range(100000)])
-    print(f"first(x):{x[0]}")
-    print(f"last(x):{x[len(x)-1]}")
-    y = 100/0
 
 if __name__ == "__main__":
-    #asyncio.run(main())
-    asyncio.run(main2())
+    asyncio.run(main_decorator())
+    asyncio.run(main_async_with())

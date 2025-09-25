@@ -15,7 +15,7 @@ class Timer:
         print("Timer __exit__")
         self.endTime = time.perf_counter()
         self.elapse = self.endTime - self.startTime
-        if not (except_type is None and except_value is None):
+        if except_type is not None:
             print(f"Exception captured in __exit__ {except_type}:{except_value}")
             # return True to suppress exception, None is return by default to propagate the exception
             return True 

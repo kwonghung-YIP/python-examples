@@ -17,7 +17,7 @@ def timer():
     except Exception as e:
         print("timer() exception after yield")
         print(f"captured exception: {type(e)}:{e}")
-        raise e #propagate the exception
+        raise e #propagate the exception here or not catch any exception
     finally:
         print("timer() finally...")
         resource['endTime'] = time.perf_counter()
