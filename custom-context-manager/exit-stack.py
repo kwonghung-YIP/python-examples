@@ -23,7 +23,7 @@ def main():
         resA = exitStack.enter_context(MyResource("resourceA"))
         resC = exitStack.enter_context(MyResource("resourceC"))
 
-        # push only register the __exit__ function for resourceD
+        # "push" only register the __exit__ function for resourceD
         # __enter__ function of resourceD has not been invoked
         resD = exitStack.push(MyResource("resourceD"))
         
