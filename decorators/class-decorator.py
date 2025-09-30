@@ -1,0 +1,2 @@
+def classDecorator(cls):
+    pass

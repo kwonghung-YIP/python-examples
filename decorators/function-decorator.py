@@ -1,17 +1,28 @@
 def decorator(func):
     def wrapper(*args, **kwargs):
         print(f"before invoke func{func}")
-        result = func(*args,**kwargs)
-        print(f"after invoke func:{func},result:{result}")
-        return round(result,2)
+        try:
+            result = func(*args,**kwargs)
+            return round(result,2)
+        finally:
+            print(f"after invoke func:{func}")
     return wrapper
 
 @decorator
-def subtract(a:float,b:float) -> float:
-    print(f"calling subtract:{a}-{b}")
-    return a - b
+def divide(a:float,b:float) -> float:
+    print(f"calling divde:{a}/{b}")
+    return a / b
+
+def multiple(a:float,b:float) -> float:
+    print(f"calling multiple:{a}/{b}")
+    return a * b
+
+multiple = decorator(multiple)
 
 if __name__ == "__main__":
-    print(subtract(10,0.000001))
-    print(subtract(10,b=0.000001))
-    print(subtract(b=10,a=0.000001))
+    print(divide(10,0.000001))
+    print(divide(10,b=0.000001))
+    print(divide(b=10,a=0.000001))
+    print(multiple(3,4))
+    print(divide(100,0))
+    
