@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class SimpleModel(BaseModel):
+    model_config = ConfigDict(strict=False)
     intField: int
     floatField: float
     complexField: complex
@@ -23,7 +24,8 @@ def main():
     )
     obj.intField = 0b1111 #binary value
     obj.intField = int("0b1111",base=2)
-    #obj.intField = "15"
+    obj.intField = "15"
+    print(type(obj.intField))
     #obj.intField = "0b1111"
     #print(obj.intField + 1)
     #obj.intField = b"\b1111"
